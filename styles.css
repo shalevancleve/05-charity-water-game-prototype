@@ -13,3 +13,139 @@ Secondary Colors:
 - Pink:       #F16061
 
 */
+
+/* Center the game container on the page */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #52a6e2; /* Lighter blue for a softer look */
+    margin: 0;
+    font-family: Arial, sans-serif;
+    padding-top: 80px; /* Add space for the fixed top bar */
+    padding-bottom: 90px; /* Add bottom padding to body so content isn't hidden behind the footer */
+}
+
+/* Style the game container */
+#game-container {
+    background: #FFC907; /* Charity: Water yellow */
+    border: 4px solid #198ff0;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Placeholder grid styling */
+#grid {
+    width: 300px;
+    height: 300px;
+    background: #fff;
+    border: 2px dashed #8BD1CB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+    border-radius: 8px;
+}
+
+/* Top bar styling */
+#top-bar {
+    width: 100vw;
+    background: #fff; /* Soft white background for the top bar */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    box-sizing: border-box;
+    height: 8%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    border-bottom: 3px solid #198ff0;
+}
+
+/* Logo styling */
+#logo-container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+#logo {
+    height: 48px;
+    width: auto;
+}
+
+/* Navbar styling */
+#navbar {
+    display: flex;
+    gap: 24px;
+}
+.nav-link {
+    color: #111; /* Plain black text for nav links */
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1em;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+.nav-link:hover {
+    background: #8BD1CB;
+    color: #159A48;
+}
+
+/* Footer bar styling */
+#footer-bar {
+    width: 100vw;
+    background: #fff;
+    border-top: 2px solid #e0e0e0;
+    padding: 16px 0 8px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+}
+
+#footer-socials {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 8px;
+}
+
+#footer-socials a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+#footer-socials svg {
+    width: 28px;
+    height: 28px;
+    fill: #888;
+    transition: fill 0.2s;
+}
+
+#footer-socials a:hover svg {
+    fill: #2E9DF7; /* Charity: Water blue on hover */
+}
+
+#footer-info {
+    text-align: center;
+    max-width: 900px;
+    color: #555;
+    font-size: 0.85em;
+    line-height: 1.4;
+    margin: 0 16px;
+    word-break: break-word;
+    padding-bottom: 4px;
+}

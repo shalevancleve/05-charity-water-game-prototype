@@ -3,32 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Charity Water Game</title>
+    <title>Newsletter Signup | Charity Water Game</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Top bar with logo and navigation -->
     <div id="top-bar">
         <div id="logo-container">
-            <!-- Logo image, make sure cw_logo_horizontal.png is in the project folder -->
             <img src="img/cw_logo_horizontal.png" alt="Charity: Water Logo" id="logo">
         </div>
         <nav id="navbar">
-            <a href="#" class="nav-link">Play Game</a>
+            <a href="index.html" class="nav-link">Play Game</a>
             <a href="about.html" class="nav-link">About us</a>
             <a href="signup.html" class="nav-link">Newsletter Signup</a>
         </nav>
     </div>
-    <h1>Liquid Lifeline</h1>
-    <!-- Game container centered on the page -->
+    <h1>Sign Up for Our Newsletter</h1>
     <div id="game-container">
-        <!-- Placeholder for the 3x3 grid -->
-        <div id="grid">
-            <!-- Tiles will go here in the future -->
-            <p>Game grid will appear here.</p>
+        <div id="grid" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <!-- Simple signup form -->
+            <form style="display: flex; flex-direction: column; gap: 12px; width: 90%; max-width: 250px;">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" required>
+                <button type="submit" style="background: #2E9DF7; color: #fff; border: none; border-radius: 4px; padding: 8px 0; font-weight: bold; cursor: pointer;">Sign Up</button>
+            </form>
+            <p style="margin-top: 16px; text-align: center;">
+                Signing up for our newsletter helps you learn how you can make a difference with charity: water.
+            </p>
         </div>
     </div>
-    <!-- Footer bar with social media icons and info text -->
     <footer id="footer-bar">
         <div id="footer-socials">
             <!-- Social media icons as SVGs, each wrapped in a link -->
@@ -64,7 +69,5 @@
             </small>
         </div>
     </footer>
-
-    <script src="script.js" defer></script>
 </body>
 </html>
