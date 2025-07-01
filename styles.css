@@ -45,35 +45,43 @@ body {
       grid-template-columns: repeat(3, 100px);
       grid-template-rows: repeat(3, 100px);
       gap: 5px;
+      position: relative;
     }
 
-    .tile {
-      width: 100px;
-      height: 100px;
-      background-color: #e0e0e0;
-      border: 2px solid #ccc;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 24px;
-      font-weight: bold;
-      user-select: none;
-    }
+.tile {
+  width: 100px;
+  height: 100px;
+  background-color: #e0e0e0;
+  border: 2px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  user-select: none;
+  cursor: default;
+  transition: transform 0.4s ease, background-color 0.2s ease;
+      /* We'll animate transform for sliding */
+}
 
-    .start {
-      background-color: #4caf50;
-      color: white;
-    }
+.start {
+  background-color: #4caf50;
+  color: white;
+}
 
-    .destination {
-      background-color: #2196f3;
-      color: white;
-    }
+.destination {
+  background-color: #2196f3;
+  color: white;
+}
 
-    .movable {
-      background-color: #ffc107;
-      cursor: grab;
-    }
+.movable {
+  background-color: #ffc107;
+  cursor: grab;
+}
+
+.highlight {
+  background-color: #cdeffd !important;
+}
 
 /* Top bar styling */
 #top-bar {
