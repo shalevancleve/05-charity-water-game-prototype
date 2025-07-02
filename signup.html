@@ -35,21 +35,23 @@
     <div id="sidebar-overlay"></div>
     
     <div id="scroll-wrapper">
-      <h1>Sign Up for Our Newsletter</h1>
-      <div id="main-container">
-          <div id="grid" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-              <!-- Simple signup form -->
-              <form style="display: flex; flex-direction: column; gap: 12px; width: 90%; max-width: 250px;">
-                  <label for="name">Name:</label>
-                  <input type="text" id="name" name="name" required>
-                  <label for="email">Email Address:</label>
-                  <input type="email" id="email" name="email" required>
-                  <button type="submit" style="background: #2E9DF7; color: #fff; border: none; border-radius: 4px; padding: 8px 0; font-weight: bold; cursor: pointer;">Sign Up</button>
-              </form>
-              <p style="margin-top: 16px; text-align: center;">
-                  Signing up for our newsletter helps you learn how you can make a difference with charity: water.
-              </p>
-          </div>
+      <div class="signup-card">
+        <h1>Join Our Newsletter</h1>
+        <p class="signup-lead">
+          Get updates on our mission to bring clean water to everyone, inspiring stories, and ways you can help.
+        </p>
+        <form class="signup-form">
+          <label for="signup-name">Name</label>
+          <input type="text" id="signup-name" name="name" required autocomplete="off">
+
+          <label for="signup-email">Email Address</label>
+          <input type="email" id="signup-email" name="email" required autocomplete="off">
+
+          <button type="submit">Sign Up</button>
+        </form>
+        <p class="signup-note">
+          We respect your privacy. Unsubscribe at any time.
+        </p>
       </div>
     </div>
     
