@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charity Water Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -19,21 +20,21 @@
             <a href="signup.html" class="nav-link">Newsletter Signup</a>
         </nav>
     </div>
-    <h1>Liquid Lifeline</h1>
-    <!-- Game container centered on the page -->
-    <div id="game-container">
-        <!-- Placeholder for the 3x3 grid -->
+    <div id="scroll-wrapper">
+      <h1>Liquid Lifeline</h1>
+      <div id="game-container">
         <div id="game-board">
-          <div class="tile start" data-type="start">S</div>
-          <div class="tile movable" draggable="true" data-type="pipe">─</div>
-          <div class="tile movable" draggable="true" data-type="pipe">│</div>
-          <div class="tile movable" draggable="true" data-type="elbow">┌</div>
-          <div class="tile"></div>
-          <div class="tile movable" draggable="true" data-type="pipe">│</div>
-          <div class="tile movable" draggable="true" data-type="elbow">┐</div>
-          <div class="tile movable" draggable="true" data-type="pipe">─</div>
-          <div class="tile destination" data-type="destination">D</div>
+          <div class="tile start"><img src="assets/water-can-transparent.png" alt="Start"></div>
+        <div class="tile movable" draggable="true" data-type="l-pipe"><img src="assets/l-pipe.png" alt="L Elbow Pipe"></div>
+        <div class="tile movable" draggable="true" data-type="v-pipe"><img src="assets/v-pipe.png" alt="Vertical Pipe"></div>
+        <div class="tile" draggable="false" data-type="stone-block"><img src="assets/stone-block.png" alt="Stone Block Obstacle"></div>
+        <div class="tile" data-type="empty"><img src="assets/empty.png" alt="Empty Space"></div>
+        <div class="tile" data-type="empty"><img src="assets/empty.png" alt="Empty Space"></div>
+        <div class="tile movable" draggable="true" data-type="n-pipe"><img src="assets/n-pipe.png" alt="N Elbow Pipe"></div>
+        <div class="tile" data-type="empty"><img src="assets/empty.png" alt="Empty Space"></div>
+        <div class="tile destination"><img src="assets/destination-house.png" alt="Destination"></div>
         </div>
+      </div>
     </div>
     <!-- Footer bar with social media icons and info text -->
     <footer id="footer-bar">
