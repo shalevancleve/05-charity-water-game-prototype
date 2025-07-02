@@ -1,30 +1,85 @@
-html, body {
+    html, body {
       height: 100%;
       margin: 0;
       padding: 0;
+      user-select: none;
     }
 
     body {
       font-family: 'Montserrat', sans-serif;
-      font-weight: 400;
-      line-height: 1.6;
-      color: #222;
+      background: #52a6e2;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      background: #52a6e2;
-      font-family: Arial, sans-serif;
+      justify-content: flex-start;
       padding-top: 80px;
       padding-bottom: 90px;
-      box-sizing: border-box;
+      overflow-y: auto;
+      overflow-x: hidden;
       min-height: 100vh;
-      overflow: hidden;
+      box-sizing: border-box;
     }
 
-    body.dragging,
-    body.dragging * {
-      cursor: none !important;
+    #scroll-wrapper {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+
+    .tile {
+      will-change: transform;
+    }
+
+    .tile.animating {
+      transition: transform 0.3s ease;
+    }
+
+    .tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    .tile.highlight {
+      outline: 3px solid #cdeffd;
+    }
+
+    /* Pop effect for selected tile*/
+    .tile.popping {
+      transition: transform 0.15s ease;
+      transform: scale(1.15);
+      z-index: 10;
+    }
+
+    #game-container {
+          background: #FFC907;
+          border: 4px solid #198ff0;
+          border-radius: 16px;
+          padding: 32px;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          max-width: 100%;
+          box-sizing: border-box;
+          position: relative;
+        }
+
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 5px;
+      position: relative;
+      background-image: url('assets/background.jpg');
+      background-size: cover;
+      border-radius: 5px;
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -41,75 +96,6 @@ html, body {
       font-size: 1rem;
       color: #333;
       margin-bottom: 1em;
-    }
-
-    #scroll-wrapper {
-      overflow-y: auto;
-      max-height: calc(100vh - 80px - 90px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 24px;
-    }
-
-    #game-container {
-      background: #FFC907;
-      border: 4px solid #198ff0;
-      border-radius: 16px;
-      padding: 32px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      max-width: 100%;
-      box-sizing: border-box;
-      position: relative;
-    }
-
-    #game-board {
-      display: grid;
-      grid-template-columns: repeat(3, 100px);
-      grid-template-rows: repeat(3, 100px);
-      gap: 5px;
-      position: relative;
-      background-image: url('assets/background.jpg');
-      background-size: cover;
-      border-radius: 5px;
-    }
-
-    .tile {
-      width: 100px;
-      height: 100px;
-      background-color: transparent;
-      border: none;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 24px;
-      font-weight: bold;
-      user-select: none;
-      cursor: default;
-      transition: transform 0.4s ease;
-      position: relative;
-    }
-
-    .tile img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-    }
-
-    .tile.movable {
-      cursor: grab;
-    }
-
-    .tile.movable:active {
-      cursor: grabbing;
-    }
-
-    .highlight {
-      outline: 3px solid #cdeffd;
     }
 
     #top-bar {
