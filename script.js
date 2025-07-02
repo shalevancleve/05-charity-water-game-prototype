@@ -1,4 +1,4 @@
-    const board = document.getElementById('game-board');
+const board = document.getElementById('game-board');
     let selectedTile = null;
 
     function getTileIndex(tile) {
@@ -48,6 +48,7 @@
       toTile.style.transform = `translate(${-deltaX}px, ${-deltaY}px)`;
 
       setTimeout(() => {
+        // Swap images and alt text
         const tempSrc = fromImg.src;
         const tempAlt = fromImg.alt;
         fromImg.src = toImg.src;
@@ -55,12 +56,18 @@
         toImg.src = tempSrc;
         toImg.alt = tempAlt;
 
+        // Swap data-type
         const tempType = fromTile.dataset.type;
         fromTile.dataset.type = toTile.dataset.type;
         toTile.dataset.type = tempType;
 
+        // Update movable class
         fromTile.classList.toggle('movable', fromTile.dataset.type !== 'empty');
         toTile.classList.toggle('movable', toTile.dataset.type !== 'empty');
+
+        // Always remove popping class after swap so popout can be triggered again
+        fromTile.classList.remove('popping');
+        toTile.classList.remove('popping');
 
         fromTile.style.transition = 'none';
         toTile.style.transition = 'none';
@@ -74,6 +81,10 @@
         toTile.classList.remove('animating');
         fromTile.style.transition = '';
         toTile.style.transition = '';
+
+        // Remove the inline transform style so .popping can work again
+        fromTile.style.removeProperty('transform');
+        toTile.style.removeProperty('transform');
 
       }, 300);
     }
