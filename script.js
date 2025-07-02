@@ -1,4 +1,4 @@
-const board = document.getElementById('game-board');
+    const board = document.getElementById('game-board');
     let selectedTile = null;
 
     function getTileIndex(tile) {
