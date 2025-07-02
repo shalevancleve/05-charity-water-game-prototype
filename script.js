@@ -136,3 +136,26 @@ const board = document.getElementById('game-board');
       tile.click();
       e.preventDefault();
     }, { passive: false });
+
+    // Hamburger menu and sidebar logic for beginners
+const hamburger = document.getElementById('hamburger-menu');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebar-overlay');
+
+hamburger.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+});
+
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  overlay.style.display = 'none';
+});
+
+// Hide sidebar if window is resized above 1000px
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 1000) {
+    sidebar.classList.remove('open');
+    overlay.style.display = 'none';
+  }
+});

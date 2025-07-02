@@ -1,4 +1,4 @@
-    html, body {
+html, body {
       height: 100%;
       margin: 0;
       padding: 0;
@@ -12,23 +12,26 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding-top: 80px;
-      padding-bottom: 90px;
+      padding-top: 0;      /* Remove extra space above */
+      padding-bottom: 0;   /* Remove extra space below */
       overflow-y: auto;
       overflow-x: hidden;
       min-height: 100vh;
       box-sizing: border-box;
     }
 
+    /* Move the scroll wrapper up and add space above footer and below top bar */
     #scroll-wrapper {
+      margin-top: 24px;        /* Add a bit of space below the top bar */
+      margin-bottom: 110px;  /* Only enough space above the footer */
       flex: 1;
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px;
+      padding: 10vh;
       box-sizing: border-box;
-      overflow-y: auto;
+      overflow-y: none;
     }
 
     .tile {
@@ -57,6 +60,7 @@
       z-index: 10;
     }
 
+
     #game-container {
           background: #FFC907;
           border: 4px solid #198ff0;
@@ -66,7 +70,23 @@
           display: flex;
           flex-direction: column;
           align-items: center;
-          max-width: 100%;
+          width: 382px;
+          height: 382px;
+          box-sizing: border-box;
+          position: relative;
+        }
+
+    #main-container {
+          background: #fcf26e;
+          border: 4px solid #198ff0;
+          border-radius: 16px;
+          padding: 32px;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 382px;
+          height: 382px;
           box-sizing: border-box;
           position: relative;
         }
@@ -103,8 +123,8 @@
       background: #fff;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0 32px;
+      justify-content: flex-start; /* Default: left align */
+      padding: 0 24px;
       box-sizing: border-box;
       height: 80px;
       position: fixed;
@@ -118,6 +138,7 @@
       display: flex;
       align-items: center;
       height: 100%;
+      margin-left: 0; /* Remove any left margin if present */
     }
 
     #logo {
@@ -128,6 +149,7 @@
     #navbar {
       display: flex;
       gap: 24px;
+      margin-left: 32px; /* Default: space from logo */
     }
 
     .nav-link {
@@ -195,4 +217,200 @@
       margin: 0 16px;
       word-break: break-word;
       padding-bottom: 4px;
+      overflow-y: auto;
     }
+
+    /* Hamburger menu button styles (hidden by default) */
+    #hamburger-menu {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 38px;
+      height: 38px;
+      margin-right: 24px; /* Small space between hamburger and logo */
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 200;
+    }
+
+    #hamburger-menu span {
+      display: block;
+      width: 26px;
+      height: 4px;
+      margin: 3px 0;
+      background: #111; /* Make hamburger bars black */
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* Sidebar styles (hidden by default) */
+    #sidebar {
+      display: none;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 220px;
+      background: #fff;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+      padding-top: 60px;
+      z-index: 300;
+      transition: transform 0.3s ease;
+      transform: translateX(-100%);
+    }
+
+    #sidebar.open {
+      display: flex;
+      transform: translateX(0);
+    }
+
+    #sidebar .nav-link {
+      margin: 18px 0;
+      font-size: 1.1em;
+      padding: 12px 24px;
+      color: #198ff0;
+      border-radius: 8px;
+      text-align: left;
+    }
+
+    #sidebar .nav-link:hover {
+      background: #e6f4ff;
+      color: #000;
+    }
+
+    /* Close button for sidebar */
+    #sidebar-close {
+      display: none;
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 28px;
+      height: 28px;
+      background: none;
+      border: none;
+      font-size: 2em;
+      color: #198ff0;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    #sidebar.open #sidebar-close {
+      display: block;
+    }
+
+    /* Overlay for sidebar */
+    #sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.2);
+      z-index: 250;
+    }
+
+    #sidebar.open ~ #sidebar-overlay {
+      display: block;
+    }
+
+    /* Media queries for ≤1000px wide */
+    @media (max-width: 1000px) {
+      #navbar {
+        display: none !important; /* Hide navbar */
+      }
+      #hamburger-menu {
+        display: flex; /* Show hamburger */
+      }
+      #sidebar {
+        /* Sidebar is handled above */
+      }
+    }
+
+    /* Screens wider than 1000px */
+    @media (min-width: 1001px) {
+      #top-bar {
+        justify-content: space-between; /* Logo left, nav right */
+      }
+      #navbar {
+        margin-left: 0; /* Remove left margin so it's flush right */
+      }
+    }
+
+    /* Screens between 900px and 1000px wide */
+    @media (min-width: 901px) and (max-width: 1000px) {
+      /* Add styles for medium-large screens here */
+    }
+
+    /* Screens 900px wide or less */
+    @media (max-width: 900px) {
+      #logo {
+        height: 36px; /* Smaller logo for medium screens */
+      }
+      #hamburger-menu {
+        width: 28px;
+        height: 28px;
+      }
+      #hamburger-menu span {
+        width: 20px;
+        height: 4px;
+        margin: 2px 0;
+      }
+      /* Add styles for small screens here */
+    }
+
+    /* Screens 600px wide or less */
+    @media (max-width: 600px) {
+      #logo {
+        height: 28px; /* Even smaller logo for small screens */
+      }
+      #hamburger-menu {
+        width: 20px;
+        height: 20px;
+      }
+      #hamburger-menu span {
+        width: 16px;
+        height: 4px;
+        margin: 1.5px 0;
+      }
+      /* Add styles for small mobile screens here */
+    }
+
+    /* Screens 500px wide or less */
+    @media (max-width: 500px) {
+      /* Add styles for smaller mobile screens here */
+    }
+
+    /* Screens 430px wide or less */
+    @media (max-width: 430px) {
+      #sidebar {
+        width: 140px; /* Make sidebar narrower for very small screens */
+        padding-top: 32px; /* Even less space above links */
+      }
+      #sidebar-close {
+        width: 22px;
+        height: 22px;
+        font-size: 1.4em;
+        top: 0px;
+        left: 0px;
+        margin: 6px 0;
+        padding: 7px 8px;
+      }
+      #sidebar .nav-link {
+        font-size: 0.9em;      /* Smaller text */
+        padding: 7px 8px;   /* Even less padding */
+        margin: 6px 0;         /* Less vertical space between links */
+      }
+      /* Add styles for very small mobile screens here */
+    }
+
+    /* Screens 750px tall or less */
+    @media (max-height: 750px) {
+      #scroll-wrapper {
+        overflow-y: auto;
+        margin-top: 8px; /* Less space below the top bar */
+        padding-top: 6vh; /* Move content higher up */
+      }
+    }
+
