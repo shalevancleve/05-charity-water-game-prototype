@@ -96,14 +96,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // MOUSE events
       board.addEventListener('dragstart', (e) => {
-        if (e.target.classList.contains('movable')) {
-          draggedTile = e.target;
-          const index = getTileIndex(draggedTile);
-          highlightAdjacents(index);
-        }
-      });
+      if (e.target.classList.contains('movable')) {
+        draggedTile = e.target;
+        document.body.classList.add('dragging');
+        const index = getTileIndex(draggedTile);
+        highlightAdjacents(index);
+
+        // Use a fully transparent SVG as drag image to eliminate system ghost + icon
+        const transparentImg = new Image();
+        transparentImg.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>';
+        e.dataTransfer.setDragImage(transparentImg, 0, 0);
+      }
+    });
+
 
       board.addEventListener('dragend', () => {
+        document.body.classList.remove('dragging');
         clearHighlights();
       });
 

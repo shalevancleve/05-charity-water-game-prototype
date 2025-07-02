@@ -22,6 +22,11 @@ html, body {
       overflow: hidden;
     }
 
+    body.dragging,
+    body.dragging * {
+      cursor: none !important;
+    }
+
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
@@ -95,6 +100,14 @@ html, body {
       pointer-events: none;
     }
 
+    .tile.movable {
+      cursor: grab;
+    }
+
+    .tile.movable:active {
+      cursor: grabbing;
+    }
+
     .highlight {
       outline: 3px solid #cdeffd;
     }
@@ -144,8 +157,8 @@ html, body {
     }
 
     .nav-link:hover {
-      background: #8BD1CB;
-      color: #159A48;
+      background: #fcf26e;
+      color: #000000;
     }
 
     #footer-bar {
