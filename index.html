@@ -93,19 +93,5 @@
     </footer>
 
     <script src="script.js" defer></script>
-    <script>
-    // Add close button logic for sidebar
-    document.addEventListener('DOMContentLoaded', () => {
-      const closeBtn = document.getElementById('sidebar-close');
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebar-overlay');
-      if (closeBtn && sidebar && overlay) {
-        closeBtn.addEventListener('click', () => {
-          sidebar.classList.remove('open');
-          overlay.style.display = 'none';
-        });
-      }
-    });
-    </script>
 </body>
 </html>
