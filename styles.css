@@ -33,7 +33,15 @@ html, body {
       overflow-y: none;
     }
 
+    /* 3x3 grid tiles */
     .tile {
+      width: 102px;
+      height: 102px;
+      min-width: 102px;
+      min-height: 102px;
+      max-width: 102px;
+      max-height: 102px;
+      box-sizing: border-box;
       will-change: transform;
     }
 
@@ -77,13 +85,34 @@ html, body {
 
     #game-board {
       display: grid;
-      grid-template-columns: repeat(3, 100px);
-      grid-template-rows: repeat(3, 100px);
+      grid-template-columns: repeat(3, 102px);
+      grid-template-rows: repeat(3, 102px);
       gap: 5px;
       position: relative;
       background-image: url('assets/background.jpg');
       background-size: cover;
       border-radius: 5px;
+      width: 316px;   /* 3*102px + 2*5px gap = 316px */
+      height: 316px;  /* 3*102px + 2*5px gap = 316px */
+      box-sizing: content-box;
+    }
+
+    /* 5x5 grid for challenge level */
+    #game-board.five-by-five {
+      grid-template-columns: repeat(5, 56px);
+      grid-template-rows: repeat(5, 56px);
+      width: 300px;  /* 5*56px + 4*5px gap = 300px */
+      height: 300px; /* 5*56px + 4*5px gap = 300px */
+    }
+
+    /* 5x5 grid tiles */
+    #game-board.five-by-five .tile {
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      min-height: 56px;
+      max-width: 56px;
+      max-height: 56px;
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -549,6 +578,67 @@ html, body {
         max-width: 98vw;
         padding: 18px 6vw 18px 6vw;
         margin-top: 18px;
+      }
+    }
+
+    #game-area-wrapper {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 24px;
+    }
+
+    #menu-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-width: 120px;
+      margin-top: 40px;
+    }
+
+    #play-btn,
+    #new-game-btn,
+    #next-level-btn {
+      background: #FFC907;
+      color: #198ff0;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: bold;
+      font-size: 1.25em;
+      border: none;
+      border-radius: 10px;
+      padding: 18px 36px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(30, 144, 255, 0.08);
+      transition: background 0.2s, color 0.2s, opacity 0.2s;
+    }
+
+    #play-btn:hover:enabled,
+    #new-game-btn:hover:enabled,
+    #next-level-btn:hover:enabled {
+      background: #198ff0;
+      color: #fff;
+    }
+
+    #next-level-btn:disabled {
+      background: #e0e0e0;
+      color: #888;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 700px) {
+      #game-area-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+      }
+      #menu-panel {
+        margin-top: 0;
+        min-width: 0;
       }
     }
 

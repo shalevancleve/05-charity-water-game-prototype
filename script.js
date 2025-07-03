@@ -10,9 +10,9 @@ let selectedTile = null;
 
 // Tile map: each key represents a tile type
 const TILE_MAP = {
-  S: { type: 'start', img: 'assets/water-can-transparent.png', alt: 'Start', classes: 'start' },
-  D: { type: 'destination', img: 'assets/destination-house.png', alt: 'Destination', classes: 'destination' },
-  B: { type: 'stone-block', img: 'assets/stone-block.png', alt: 'Stone Block Obstacle', classes: '' },
+  S: { type: 'start', img: 'assets/water-can-transparent.png', alt: 'Start', classes: 'start unmovable' },
+  D: { type: 'destination', img: 'assets/destination-house.png', alt: 'Destination', classes: 'destination unmovable' },
+  B: { type: 'stone-block', img: 'assets/stone-block.png', alt: 'Stone Block Obstacle', classes: 'unmovable' },
   E: { type: 'empty', img: 'assets/empty.png', alt: 'Empty Space', classes: '' },
   H: { type: 'h-pipe', img: 'assets/h-pipe.png', alt: 'Horizontal Pipe', classes: 'movable', draggable: true },
   V: { type: 'v-pipe', img: 'assets/v-pipe.png', alt: 'Vertical Pipe', classes: 'movable', draggable: true },
@@ -42,15 +42,15 @@ const LEVELS = [
   ],
   // Level 3 (3x3)
   [
-    "S", "L", "V",
-    "B", "E", "E",
-    "N", "E", "D"
+    "S", "N", "E",
+    "B", "V", "E",
+    "E", "L", "D"
   ],
   // Level 4 (3x3)
   [
-    "H", "TU", "S",
-    "R", "N", "L",
-    "D", "E", "D"
+    "E", "R", "S",
+    "E", "TR", "N",
+    "D", "TU", "D"
   ],
   // ...add more 3x3 levels here...
   // Challenge Level (5x5)
@@ -63,9 +63,125 @@ const LEVELS = [
   ]
 ];
 
+let currentLevel = 0; // Track the current level
+
+// Store the solved state for the current level
+let solvedState = [];
+
+// Check if the current board matches the solved state
+function isBoardSolved() {
+  // Get the current board's tile keys
+  const tiles = Array.from(board.children);
+  const currentKeys = tiles.map(tile => {
+    // Find the key in TILE_MAP that matches this tile's type
+    for (const key in TILE_MAP) {
+      if (TILE_MAP[key].type === tile.dataset.type) {
+        return key;
+      }
+    }
+    return null;
+  });
+
+  // Compare currentKeys to solvedState
+  for (let i = 0; i < solvedState.length; i++) {
+    if (currentKeys[i] !== solvedState[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// This function checks if the board is solved and enables the next level button
+function checkForWin() {
+  if (isBoardSolved()) {
+    const nextLevelBtn = document.getElementById('next-level-btn');
+    if (nextLevelBtn) {
+      nextLevelBtn.disabled = false;
+    }
+    // You can add more win effects here (like a message or animation)
+  }
+}
+
+// Helper function to shuffle an array (Fisher-Yates shuffle)
+// This function makes a copy of the array, so the original is NOT changed.
+function shuffleArray(array) {
+  // Make a shallow copy so the original levelKeys is not modified
+  const arr = array.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    // Pick a random index from 0 to i
+    const j = Math.floor(Math.random() * (i + 1));
+    // Swap arr[i] and arr[j]
+    const temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+  }
+  return arr;
+}
+
+function scrambleLevelByMoves(levelKeys, rows, cols, moves = 300) {
+  const board = levelKeys.slice(); // clone to avoid mutating input
+  let previousSwaps = new Set();
+
+  // Helper to find empty tile indexes
+  function getEmptyIndexes(board) {
+    const emptyIndexes = [];
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === "E") emptyIndexes.push(i);
+    }
+    return emptyIndexes;
+  }
+
+  // Helper to find adjacent indexes in the grid
+  function getAdjacentIndexes(index, rows, cols) {
+    const adj = [];
+    const row = Math.floor(index / cols);
+    const col = index % cols;
+    if (row > 0) adj.push(index - cols);     // up
+    if (row < rows - 1) adj.push(index + cols); // down
+    if (col > 0) adj.push(index - 1);         // left
+    if (col < cols - 1) adj.push(index + 1);  // right
+    return adj;
+  }
+
+  // Used to prevent flip-flop moves
+  let lastMove = null;
+
+  for (let m = 0; m < moves; m++) {
+    const emptyIndexes = getEmptyIndexes(board);
+    const possibleSwaps = [];
+
+    for (const emptyIdx of emptyIndexes) {
+      const adjacent = getAdjacentIndexes(emptyIdx, rows, cols);
+      for (const adjIdx of adjacent) {
+        const tile = board[adjIdx];
+        if (["S", "B", "D"].includes(tile)) continue; // skip fixed tiles
+
+        const moveKey = `${adjIdx}-${emptyIdx}`;
+        const reverseKey = `${emptyIdx}-${adjIdx}`;
+        if (moveKey === lastMove) continue; // avoid direct undo
+
+        possibleSwaps.push({ from: adjIdx, to: emptyIdx, key: moveKey });
+      }
+    }
+
+    if (possibleSwaps.length === 0) break;
+
+    const swap = possibleSwaps[Math.floor(Math.random() * possibleSwaps.length)];
+
+    // Execute the move
+    [board[swap.from], board[swap.to]] = [board[swap.to], board[swap.from]];
+    lastMove = `${swap.to}-${swap.from}`; // set reverse of this move
+  }
+
+  return board;
+}
+
 // Set grid size and create grid for a level
 function loadLevel(levelIndex) {
+  currentLevel = levelIndex;
   const levelKeys = LEVELS[levelIndex];
+  // Save the solved state for this level
+  solvedState = levelKeys.slice();
   // Set grid size based on level length
   if (levelKeys.length === 25) {
     gridRows = 5;
@@ -74,9 +190,18 @@ function loadLevel(levelIndex) {
     gridRows = 3;
     gridCols = 3;
   }
+  // Use the improved scrambler for all levels
+  const scrambleMoves = (gridRows === 5 && gridCols === 5) ? 100 : 30;
+  const scrambledKeys = scrambleLevelByMoves(levelKeys, gridRows, gridCols, scrambleMoves);
   // Map keys to tile data
-  const tileData = levelKeys.map(key => TILE_MAP[key]);
+  const tileData = scrambledKeys.map(key => TILE_MAP[key]);
   createGrid(gridRows, gridCols, tileData);
+
+  // Disable next level button at the start of a level
+  const nextLevelBtn = document.getElementById('next-level-btn');
+  if (nextLevelBtn) {
+    nextLevelBtn.disabled = true;
+  }
 }
 
 // Get the index of a tile in the grid
@@ -168,6 +293,8 @@ function swapTiles(fromTile, toTile) {
     fromTile.style.removeProperty('transform');
     toTile.style.removeProperty('transform');
 
+    // After swap, check for win
+    checkForWin();
   }, 300);
 }
 
@@ -180,11 +307,25 @@ function clearSelection() {
 }
 
 // If you want to generate the grid dynamically, you can use a function like this:
+// Update createGrid to set the correct board size class
 function createGrid(rows, cols, tileData) {
-  // tileData is an array of objects describing each tile (type, image, etc)
   board.innerHTML = '';
-  board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-  board.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+  // Set tile and gap sizes to fit inside #game-container
+  let tileSize = 102;
+  let gap = 5;
+  if (rows === 5 && cols === 5) {
+    tileSize = 56;
+    gap = 5;
+  }
+
+  board.style.gridTemplateColumns = `repeat(${cols}, ${tileSize}px)`;
+  board.style.gridTemplateRows = `repeat(${rows}, ${tileSize}px)`;
+  board.style.width = `${cols * tileSize + (cols - 1) * gap}px`;
+  board.style.height = `${rows * tileSize + (rows - 1) * gap}px`;
+  board.style.gap = `${gap}px`;
+  board.classList.toggle('five-by-five', rows === 5 && cols === 5);
+
   for (let i = 0; i < rows * cols; i++) {
     const data = tileData[i] || { type: 'empty', img: 'assets/empty.png', alt: 'Empty Space', classes: '' };
     const tile = document.createElement('div');
@@ -271,7 +412,31 @@ window.addEventListener('resize', () => {
   }
 });
 
-// On page load, load the first level (level 0)
+// On page load, fill the board with empty tiles only
 window.addEventListener('DOMContentLoaded', () => {
-  loadLevel(0); // Change the index to load a different level
+  // Fill the board with empty tiles (dirt background)
+  const emptyTiles = Array(gridRows * gridCols).fill(TILE_MAP.E);
+  createGrid(gridRows, gridCols, emptyTiles);
+
+  // Set up menu buttons
+  const newGameBtn = document.getElementById('new-game-btn');
+  const nextLevelBtn = document.getElementById('next-level-btn');
+
+  if (newGameBtn) {
+    newGameBtn.addEventListener('click', () => {
+      loadLevel(0); // Always load the first level
+      // nextLevelBtn.disabled = true; // Uncomment when level completion is implemented
+    });
+  }
+
+  if (nextLevelBtn) {
+    nextLevelBtn.addEventListener('click', () => {
+      // Only go to next level if not at last level
+      if (currentLevel < LEVELS.length - 1) {
+        loadLevel(currentLevel + 1);
+        // nextLevelBtn.disabled = true; // Uncomment when level completion is implemented
+      }
+    });
+    nextLevelBtn.disabled = true; // Always disabled for now
+  }
 });

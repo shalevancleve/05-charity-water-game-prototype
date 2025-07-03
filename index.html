@@ -39,17 +39,15 @@
     
     <div id="scroll-wrapper">
       <h1>Liquid Lifeline</h1>
-      <div id="game-container">
-        <div id="game-board">
-          <div class="tile start"><img src="assets/water-can-transparent.png" alt="Start"></div>
-        <div class="tile movable" draggable="true" data-type="l-pipe"><img src="assets/l-pipe.png" alt="L Elbow Pipe"></div>
-        <div class="tile movable" draggable="true" data-type="v-pipe"><img src="assets/v-pipe.png" alt="Vertical Pipe"></div>
-        <div class="tile" draggable="false" data-type="stone-block"><img src="assets/stone-block.png" alt="Stone Block Obstacle"></div>
-        <div class="tile" data-type="empty"><img src="assets/empty.png" alt="Empty Space"></div>
-        <div class="tile" data-type="empty"><img src="assets/empty.png" alt="Empty Space"></div>
-        <div class="tile movable" draggable="true" data-type="n-pipe"><img src="assets/n-pipe.png" alt="N Elbow Pipe"></div>
-        <div class="tile" data-type="empty"><img src="assets/empty.png" alt="Empty Space"></div>
-        <div class="tile destination"><img src="assets/destination-house.png" alt="Destination"></div>
+      <div id="game-area-wrapper">
+        <div id="game-container">
+          <div id="game-board">
+            <!-- Board will be filled with empty tiles by JS on load -->
+          </div>
+        </div>
+        <div id="menu-panel">
+          <button id="new-game-btn">New Game</button>
+          <button id="next-level-btn" disabled>Next Level</button>
         </div>
       </div>
     </div>
