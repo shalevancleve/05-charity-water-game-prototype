@@ -118,61 +118,101 @@ function shuffleArray(array) {
   return arr;
 }
 
-function scrambleLevelByMoves(levelKeys, rows, cols, moves = 300) {
-  const board = levelKeys.slice(); // clone to avoid mutating input
-  let previousSwaps = new Set();
-
-  // Helper to find empty tile indexes
-  function getEmptyIndexes(board) {
-    const emptyIndexes = [];
-    for (let i = 0; i < board.length; i++) {
-      if (board[i] === "E") emptyIndexes.push(i);
+function scrambleLevelByMoves(levelKeys, rows, cols, moves = 300, minOutOfPlace = 0.6) {
+  // minOutOfPlace: percent of movable tiles that must be out of place (0.6 = 60%)
+  const solved = levelKeys.slice();
+  let board = levelKeys.slice();
+  const movableIndexes = [];
+  for (let i = 0; i < board.length; i++) {
+    const tile = board[i];
+    if (!["S", "B", "D"].includes(tile)) {
+      movableIndexes.push(i);
     }
-    return emptyIndexes;
   }
 
-  // Helper to find adjacent indexes in the grid
-  function getAdjacentIndexes(index, rows, cols) {
-    const adj = [];
-    const row = Math.floor(index / cols);
-    const col = index % cols;
-    if (row > 0) adj.push(index - cols);     // up
-    if (row < rows - 1) adj.push(index + cols); // down
-    if (col > 0) adj.push(index - 1);         // left
-    if (col < cols - 1) adj.push(index + 1);  // right
-    return adj;
-  }
+  let attempts = 0;
+  let maxAttempts = 20; // avoid infinite loops
 
-  // Used to prevent flip-flop moves
-  let lastMove = null;
+  while (attempts < maxAttempts) {
+    // Track which movable tiles have moved
+    const moved = new Set();
 
-  for (let m = 0; m < moves; m++) {
-    const emptyIndexes = getEmptyIndexes(board);
-    const possibleSwaps = [];
+    board = solved.slice(); // start from solved state
 
-    for (const emptyIdx of emptyIndexes) {
-      const adjacent = getAdjacentIndexes(emptyIdx, rows, cols);
-      for (const adjIdx of adjacent) {
-        const tile = board[adjIdx];
-        if (["S", "B", "D"].includes(tile)) continue; // skip fixed tiles
+    let lastMove = null;
 
-        const moveKey = `${adjIdx}-${emptyIdx}`;
-        const reverseKey = `${emptyIdx}-${adjIdx}`;
-        if (moveKey === lastMove) continue; // avoid direct undo
+    for (let m = 0; m < moves; m++) {
+      // Find all empty tile indexes
+      const emptyIndexes = [];
+      for (let i = 0; i < board.length; i++) {
+        if (board[i] === "E") emptyIndexes.push(i);
+      }
 
-        possibleSwaps.push({ from: adjIdx, to: emptyIdx, key: moveKey });
+      const possibleSwaps = [];
+
+      for (const emptyIdx of emptyIndexes) {
+        // Get adjacent indexes
+        const row = Math.floor(emptyIdx / cols);
+        const col = emptyIdx % cols;
+        const adj = [];
+        if (row > 0) adj.push(emptyIdx - cols);
+        if (row < rows - 1) adj.push(emptyIdx + cols);
+        if (col > 0) adj.push(emptyIdx - 1);
+        if (col < cols - 1) adj.push(emptyIdx + 1);
+
+        for (const adjIdx of adj) {
+          const tile = board[adjIdx];
+          if (["S", "B", "D"].includes(tile)) continue; // skip unmovable
+          const moveKey = `${adjIdx}-${emptyIdx}`;
+          if (moveKey === lastMove) continue; // avoid undoing last move
+          possibleSwaps.push({ from: adjIdx, to: emptyIdx, key: moveKey });
+        }
+      }
+
+      if (possibleSwaps.length === 0) break;
+
+      // Prioritize swaps with tiles that haven't moved yet
+      let prioritized = possibleSwaps.filter(swap => !moved.has(swap.from));
+      let swap;
+      if (prioritized.length > 0) {
+        swap = prioritized[Math.floor(Math.random() * prioritized.length)];
+      } else {
+        swap = possibleSwaps[Math.floor(Math.random() * possibleSwaps.length)];
+      }
+
+      // Execute the move
+      [board[swap.from], board[swap.to]] = [board[swap.to], board[swap.from]];
+      lastMove = `${swap.to}-${swap.from}`;
+      moved.add(swap.from);
+    }
+
+    // After shuffling, check how many movable tiles are out of place
+    let outOfPlace = 0;
+    for (const idx of movableIndexes) {
+      if (board[idx] !== solved[idx]) {
+        outOfPlace++;
+      }
+    }
+    const percentOut = outOfPlace / movableIndexes.length;
+
+    // Make sure board is not solved and enough tiles are out of place
+    let isSolved = true;
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] !== solved[i]) {
+        isSolved = false;
+        break;
       }
     }
 
-    if (possibleSwaps.length === 0) break;
+    if (!isSolved && percentOut >= minOutOfPlace) {
+      // Good shuffle
+      return board;
+    }
 
-    const swap = possibleSwaps[Math.floor(Math.random() * possibleSwaps.length)];
-
-    // Execute the move
-    [board[swap.from], board[swap.to]] = [board[swap.to], board[swap.from]];
-    lastMove = `${swap.to}-${swap.from}`; // set reverse of this move
+    attempts++;
   }
 
+  // If we can't get a good shuffle after maxAttempts, just return the last board
   return board;
 }
 
@@ -180,9 +220,7 @@ function scrambleLevelByMoves(levelKeys, rows, cols, moves = 300) {
 function loadLevel(levelIndex) {
   currentLevel = levelIndex;
   const levelKeys = LEVELS[levelIndex];
-  // Save the solved state for this level
   solvedState = levelKeys.slice();
-  // Set grid size based on level length
   if (levelKeys.length === 25) {
     gridRows = 5;
     gridCols = 5;
@@ -190,14 +228,12 @@ function loadLevel(levelIndex) {
     gridRows = 3;
     gridCols = 3;
   }
-  // Use the improved scrambler for all levels
+  // Use improved scrambler with out-of-place requirement
   const scrambleMoves = (gridRows === 5 && gridCols === 5) ? 100 : 30;
-  const scrambledKeys = scrambleLevelByMoves(levelKeys, gridRows, gridCols, scrambleMoves);
-  // Map keys to tile data
+  const scrambledKeys = scrambleLevelByMoves(levelKeys, gridRows, gridCols, scrambleMoves, 0.6);
   const tileData = scrambledKeys.map(key => TILE_MAP[key]);
   createGrid(gridRows, gridCols, tileData);
 
-  // Disable next level button at the start of a level
   const nextLevelBtn = document.getElementById('next-level-btn');
   if (nextLevelBtn) {
     nextLevelBtn.disabled = true;
