@@ -22,14 +22,13 @@ html, body {
 
     /* Move the scroll wrapper up and add space above footer and below top bar */
     #scroll-wrapper {
-      margin-top: 24px;        /* Add a bit of space below the top bar */
-      margin-bottom: 110px;  /* Only enough space above the footer */
+      margin: 24px;
       flex: 1;
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 10vh;
+      padding-top: 80px;
       box-sizing: border-box;
       overflow-y: none;
     }
@@ -162,11 +161,8 @@ html, body {
       display: flex;
       flex-direction: column;
       align-items: center;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      z-index: 100;
-      height: 90px;
+      height: 125px;
+      box-sizing: border-box;
     }
 
     #footer-socials {
@@ -402,7 +398,7 @@ html, body {
       border-radius: 18px;
       box-shadow: 0 4px 24px rgba(30, 144, 255, 0.08);
       max-width: 480px;
-      margin: 48px auto 0 auto;
+      margin: auto auto auto auto;
       padding: 36px 28px 32px 28px;
       display: flex;
       flex-direction: column;
@@ -449,17 +445,13 @@ html, body {
     }
 
     .about-link {
-      color: #FFC907;
+      color: #000000;
       text-decoration: underline;
       font-weight: 600;
     }
 
     .about-link:hover {
-      color: #000000;
-      background: #FFC907;
-      text-decoration: none;
-      border-radius: 4px;
-      padding: 2px 6px;
+      color: #FFC907;
     }
 
     /* Signup Page Card */
@@ -468,7 +460,7 @@ html, body {
       border-radius: 18px;
       box-shadow: 0 4px 24px rgba(30, 144, 255, 0.08);
       max-width: 400px;
-      margin: 48px auto 0 auto;
+      margin: auto auto auto auto;
       padding: 36px 28px 32px 28px;
       display: flex;
       flex-direction: column;
