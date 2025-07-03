@@ -26,6 +26,35 @@ const TILE_MAP = {
   TR: { type: 'tr-pipe', img: 'assets/tr-pipe.png', alt: 'Right T Pipe', classes: 'movable', draggable: true }
 };
 
+const preloadedImages = {};
+
+// Preload all tile images and keep them in memory
+function preloadTileImages() {
+  for (const key in TILE_MAP) {
+    const src = TILE_MAP[key].img;
+    const img = new window.Image();
+    img.src = src;
+    preloadedImages[src] = img; // Store the image object
+
+    // Preload the -f (filled) version for pipe tiles
+    // Only for pipe types (not start, destination, stone, or empty)
+    const pipeTypes = [
+      'h-pipe', 'v-pipe', 'l-pipe', 'n-pipe', 'r-pipe', 'j-pipe',
+      'td-pipe', 'tu-pipe', 'tl-pipe', 'tr-pipe'
+    ];
+    if (pipeTypes.includes(TILE_MAP[key].type)) {
+      const filledSrc = src.replace('.png', '-f.png');
+      if (!preloadedImages[filledSrc]) {
+        const filledImg = new window.Image();
+        filledImg.src = filledSrc;
+        preloadedImages[filledSrc] = filledImg;
+      }
+    }
+  }
+}
+
+preloadTileImages();
+
 // Levels: each level is an array of tile keys
 const LEVELS = [
   // Level 1 (3x3)
@@ -98,6 +127,38 @@ function checkForWin() {
     if (nextLevelBtn) {
       nextLevelBtn.disabled = false;
     }
+    // Block further input after solving the puzzle
+    isSolved = true;
+
+    // --- Begin: Show water-filled pipes and popout animation ---
+    const tiles = Array.from(board.children);
+    tiles.forEach(tile => {
+      // Only update pipe tiles (not start, destination, stone, or empty)
+      const type = tile.dataset.type;
+      // List of pipe types that have a -f image
+      const pipeTypes = [
+        'h-pipe', 'v-pipe', 'l-pipe', 'n-pipe', 'r-pipe', 'j-pipe',
+        'td-pipe', 'tu-pipe', 'tl-pipe', 'tr-pipe'
+      ];
+      if (pipeTypes.includes(type)) {
+        const img = tile.querySelector('img');
+        // Change image src to the -f (filled) version
+        // Example: assets/r-pipe.png -> assets/r-pipe-f.png
+        if (img && !img.src.includes('-f.png')) {
+          img.src = img.src.replace('.png', '-f.png');
+        }
+        // Add popping class for popout animation
+        tile.classList.add('popping');
+      }
+    });
+    // Remove popping class after short delay so tiles return to normal
+    setTimeout(() => {
+      tiles.forEach(tile => {
+        tile.classList.remove('popping');
+      });
+    }, 180);
+    // --- End: Show water-filled pipes and popout animation ---
+
     // You can add more win effects here (like a message or animation)
   }
 }
@@ -238,6 +299,8 @@ function loadLevel(levelIndex) {
   if (nextLevelBtn) {
     nextLevelBtn.disabled = true;
   }
+  // Reset solved flag when loading a new level
+  isSolved = false;
 }
 
 // Get the index of a tile in the grid
@@ -273,7 +336,13 @@ function clearHighlights() {
   board.querySelectorAll('.highlight').forEach(t => t.classList.remove('highlight'));
 }
 
+let isAnimating = false; // Flag to block user input during animation
+let isSolved = false;    // Flag to block input after puzzle is solved
+
 function swapTiles(fromTile, toTile) {
+  // Block input during animation
+  isAnimating = true;
+
   fromTile.classList.remove('popping');
 
   const fromImg = fromTile.querySelector('img');
@@ -331,6 +400,9 @@ function swapTiles(fromTile, toTile) {
 
     // After swap, check for win
     checkForWin();
+
+    // Re-enable user input after animation
+    isAnimating = false;
   }, 300);
 }
 
@@ -347,7 +419,6 @@ function clearSelection() {
 function createGrid(rows, cols, tileData) {
   board.innerHTML = '';
 
-  // Set tile and gap sizes to fit inside #game-container
   let tileSize = 102;
   let gap = 5;
   if (rows === 5 && cols === 5) {
@@ -369,7 +440,8 @@ function createGrid(rows, cols, tileData) {
     tile.dataset.type = data.type;
     if (data.draggable) tile.setAttribute('draggable', 'true');
     const img = document.createElement('img');
-    img.src = data.img;
+    // Use the preloaded image's src if available
+    img.src = preloadedImages[data.img] ? preloadedImages[data.img].src : data.img;
     img.alt = data.alt;
     tile.appendChild(img);
     board.appendChild(tile);
@@ -377,6 +449,9 @@ function createGrid(rows, cols, tileData) {
 }
 
 board.addEventListener('click', (e) => {
+  // Block interaction if animating or solved
+  if (isAnimating || isSolved) return;
+
   const clickedTile = e.target.closest('.tile');
   if (!clickedTile) return;
 
@@ -407,6 +482,9 @@ board.addEventListener('click', (e) => {
 });
 
 board.addEventListener('touchstart', (e) => {
+  // Block interaction if animating or solved
+  if (isAnimating || isSolved) return;
+
   const touch = e.touches[0];
   const target = document.elementFromPoint(touch.clientX, touch.clientY);
   if (!target) return;
