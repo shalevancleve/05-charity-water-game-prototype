@@ -1107,3 +1107,27 @@ html, body {
         margin-bottom: 16px;
       }
     }
+
+    #confetti-container {
+      pointer-events: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9999;
+      overflow: hidden;
+    }
+    .confetti {
+      position: absolute;
+      border-radius: 3px;
+      opacity: 0.85;
+      will-change: transform;
+      animation: confetti-fall linear forwards;
+      /* width and height are set inline for each piece */
+    }
+    @keyframes confetti-fall {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0.5;
+      }
+    }

@@ -134,7 +134,7 @@ const STAR_THRESHOLDS = [
   [10, 20], // Level 2
   [10, 20], // Level 3
   [10, 20], // Level 4
-  [15, 25] // Level 5 (5x5)
+  [40, 65] // Level 5 (5x5)
 ];
 
 // Helper to update the timer display
@@ -201,8 +201,14 @@ function checkForWin() {
   if (isBoardSolved()) {
     const nextLevelBtn = document.getElementById('next-level-btn');
     if (nextLevelBtn) {
-      nextLevelBtn.disabled = false;
+      if (currentLevel < LEVELS.length - 1) {
+        nextLevelBtn.disabled = false;
+      } else {
+        nextLevelBtn.disabled = true; // Stay grayed out on last level
+        showConfetti(); // Show confetti on final win!
+      }
     }
+    
     // Block further input after solving the puzzle
     isSolved = true;
 
@@ -623,6 +629,41 @@ window.addEventListener('resize', () => {
   }
 });
 
+function showConfetti() {
+  // Array of bright colors for confetti
+  const colors = ['#FFD700', '#FF69B4', '#00CFFF', '#7CFC00', '#FF6347', '#FFB347'];
+  const confettiContainer = document.getElementById('confetti-container');
+  if (!confettiContainer) return;
+
+  // Remove old confetti if any
+  confettiContainer.innerHTML = '';
+
+  // Create more confetti pieces (120 instead of 50)
+  for (let i = 0; i < 120; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    // Random horizontal position
+    confetti.style.left = `${Math.random() * 100}vw`;
+    // Start a bit above the screen
+    confetti.style.top = `-${Math.random() * 40}px`;
+    // Random rotation
+    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+    // Make some confetti bigger
+    const size = 10 + Math.random() * 18; // 10px to 28px
+    confetti.style.width = `${size}px`;
+    confetti.style.height = `${size}px`;
+    // Random animation duration for different falling speeds
+    confetti.style.animationDuration = `${2 + Math.random() * 1.8}s`;
+    confettiContainer.appendChild(confetti);
+  }
+
+  // Remove confetti after animation
+  setTimeout(() => {
+    confettiContainer.innerHTML = '';
+  }, 3200); // Slightly longer to match slower pieces
+}
+
 // On page load, fill the board with empty tiles only
 window.addEventListener('DOMContentLoaded', () => {
   // Fill the board with empty tiles (dirt background)
@@ -641,6 +682,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
   if (newGameBtn) {
     newGameBtn.addEventListener('click', () => {
+      // Reset total stars and per-level stars
+      totalStars = 0; // Set total stars to zero
+      levelStars = []; // Clear the stars earned for each level
+      updateTotalStarsDisplay(); // Update the display to show zero stars
+
       loadLevel(0); // Always load the first level
       // nextLevelBtn.disabled = true; // Uncomment when level completion is implemented
     });
