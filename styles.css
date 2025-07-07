@@ -341,7 +341,7 @@ html, body {
     @media (min-width: 1001px) {
       #top-bar {
         justify-content: space-between; /* Logo left, nav right */
-      } 
+      }
       #navbar {
         margin-left: 0; /* Remove left margin so it's flush right */
       }
@@ -357,7 +357,6 @@ html, body {
         align-items: center;
         justify-content: flex-start;
         min-width: 120px;
-        margin-top: 40px;
         margin-left: 0;
       }
     }
@@ -717,7 +716,8 @@ html, body {
       align-items: center;
       justify-content: flex-start;
       min-width: 120px;
-      margin-top: 40px;
+      position: relative; /* Needed for absolute positioning of total stars */
+      min-height: 340px;  /* Ensure enough height for bottom area */
     }
 
     #play-btn,
@@ -751,6 +751,51 @@ html, body {
       opacity: 0.7;
     }
 
+    #timer-display {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.1em;
+      color: #198ff0;
+      margin: 10px 0 8px 0;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    #level-stars {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .star-icon {
+      width: 48px;
+      height: 48px;
+      vertical-align: middle;
+    }
+
+    #total-stars {
+      display: flex;
+      align-items: flex-end; /* Align image and text to the bottom */
+      gap: 6px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.15em;
+      color: #FFC907;
+      font-weight: bold;
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 10px;
+      /* Make sure it's always at the bottom of the menu panel */
+    }
+
+    #total-stars-count {
+      color: #FFC907;
+      font-weight: bold;
+      font-size: 1.1em;
+      
+    }
+
     @media (max-width: 700px) {
       #game-area-wrapper {
         flex-direction: column;
@@ -761,5 +806,22 @@ html, body {
         margin-top: 0;
         min-width: 0;
       }
+    }
+
+    #stars-container {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 2px 12px rgba(30, 144, 255, 0.10);
+      border: 4px solid #198ff0;
+      padding: 18px 18px 54px 18px;
+      margin-top: 18px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      position: relative;
+      min-width: 120px;
+      box-sizing: border-box;
+      height: 211px;
     }
 

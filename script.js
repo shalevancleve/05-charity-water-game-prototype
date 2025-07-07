@@ -120,6 +120,82 @@ function isBoardSolved() {
   return true;
 }
 
+// Timer and stars logic for beginners
+
+let timer = null;           // Holds the setInterval reference
+let elapsedSeconds = 0;     // Time for current level
+let totalStars = 0;         // Total stars earned across all levels
+let levelStars = [];        // Array to store stars earned per level
+
+// Star thresholds (in seconds) for 3, 2, 1 stars per level
+// You can adjust these values for each level if you want
+const STAR_THRESHOLDS = [
+  [10, 20], // Level 1: <=10s = 3 stars, <=20s = 2 stars, else 1
+  [10, 20], // Level 2
+  [10, 20], // Level 3
+  [10, 20], // Level 4
+  [15, 25] // Level 5 (5x5)
+];
+
+// Helper to update the timer display
+function updateTimerDisplay() {
+  const timerDisplay = document.getElementById('timer-display');
+  if (timerDisplay) {
+    timerDisplay.textContent = `Time: ${elapsedSeconds}s`;
+  }
+}
+
+// Start the timer for a level
+function startTimer() {
+  stopTimer(); // Make sure no previous timer is running
+  elapsedSeconds = 0;
+  updateTimerDisplay();
+  timer = setInterval(() => {
+    elapsedSeconds++;
+    updateTimerDisplay();
+  }, 1000);
+}
+
+// Stop the timer
+function stopTimer() {
+  if (timer) {
+    clearInterval(timer);
+    timer = null;
+  }
+}
+
+// Reset the 3-star row to all gray
+function resetLevelStarsDisplay() {
+  const starImgs = document.querySelectorAll('#level-stars .star-icon');
+  starImgs.forEach(img => {
+    img.src = 'assets/star-g.png';
+  });
+}
+
+// Update the 3-star row based on stars earned
+function updateLevelStarsDisplay(stars) {
+  const starImgs = document.querySelectorAll('#level-stars .star-icon');
+  for (let i = 0; i < 3; i++) {
+    starImgs[i].src = i < stars ? 'assets/star-y.png' : 'assets/star-g.png';
+  }
+}
+
+// Update the total stars display at the bottom
+function updateTotalStarsDisplay() {
+  const totalStarsCount = document.getElementById('total-stars-count');
+  if (totalStarsCount) {
+    totalStarsCount.textContent = `x${totalStars}`;
+  }
+}
+
+// Calculate stars earned for a level based on elapsedSeconds
+function calculateStars(levelIndex, seconds) {
+  const [threeStar, twoStar] = STAR_THRESHOLDS[levelIndex] || [30, 60];
+  if (seconds <= threeStar) return 3;
+  if (seconds <= twoStar) return 2;
+  return 1;
+}
+
 // This function checks if the board is solved and enables the next level button
 function checkForWin() {
   if (isBoardSolved()) {
@@ -158,6 +234,22 @@ function checkForWin() {
       });
     }, 180);
     // --- End: Show water-filled pipes and popout animation ---
+
+    // --- BEGIN: Timer and stars logic ---
+    stopTimer(); // Stop the timer when level is solved
+
+    // Calculate stars for this level
+    const stars = calculateStars(currentLevel, elapsedSeconds);
+
+    // Store and update stars for this level
+    levelStars[currentLevel] = Math.max(levelStars[currentLevel] || 0, stars);
+
+    // Recalculate total stars
+    totalStars = levelStars.reduce((sum, s) => sum + (s || 0), 0);
+
+    updateLevelStarsDisplay(stars);
+    updateTotalStarsDisplay();
+    // --- END: Timer and stars logic ---
 
     // You can add more win effects here (like a message or animation)
   }
@@ -301,6 +393,11 @@ function loadLevel(levelIndex) {
   }
   // Reset solved flag when loading a new level
   isSolved = false;
+
+  // --- BEGIN: Timer and stars logic ---
+  resetLevelStarsDisplay();
+  startTimer();
+  // --- END: Timer and stars logic ---
 }
 
 // Get the index of a tile in the grid
@@ -535,6 +632,12 @@ window.addEventListener('DOMContentLoaded', () => {
   // Set up menu buttons
   const newGameBtn = document.getElementById('new-game-btn');
   const nextLevelBtn = document.getElementById('next-level-btn');
+
+  // --- BEGIN: Timer and stars logic ---
+  resetLevelStarsDisplay();
+  updateTotalStarsDisplay();
+  updateTimerDisplay();
+  // --- END: Timer and stars logic ---
 
   if (newGameBtn) {
     newGameBtn.addEventListener('click', () => {
