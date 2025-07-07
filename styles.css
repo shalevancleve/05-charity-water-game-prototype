@@ -341,15 +341,40 @@ html, body {
     @media (min-width: 1001px) {
       #top-bar {
         justify-content: space-between; /* Logo left, nav right */
-      }
+      } 
       #navbar {
         margin-left: 0; /* Remove left margin so it's flush right */
       }
+      #game-area-wrapper {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 32px;
+        margin-top: 24px;
+      }
+      #menu-panel {
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-width: 120px;
+        margin-top: 40px;
+        margin-left: 0;
+      }
     }
 
-    /* Screens between 900px and 1000px wide */
-    @media (min-width: 901px) and (max-width: 1000px) {
-      /* Add styles for medium-large screens here */
+    /* For screens 1000px wide or less, stack menu below play area */
+    @media (max-width: 1000px) {
+      #game-area-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        margin-top: 18px;
+      }
+      #menu-panel {
+        margin-top: 0;
+        min-width: 0;
+        margin-left: 0;
+      }
     }
 
     /* Screens 900px wide or less */
@@ -737,13 +762,4 @@ html, body {
         min-width: 0;
       }
     }
-      #game-area-wrapper {
-        flex-direction: column;
-        align-items: center;
-        gap: 18px;
-      }
-      #menu-panel {
-        margin-top: 0;
-        min-width: 0;
-      }
 
